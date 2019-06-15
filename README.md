@@ -131,7 +131,7 @@ ansible-playbook ping.yml
 - name: ping test 
   hosts: webservers
   tasks:
-	- ping:
+    - ping:
 ```
 
 - Service 모듈
@@ -140,7 +140,7 @@ ansible-playbook ping.yml
   hosts: webservers
   tasks:
     - service: "name=nginx state=started"
-	  become: yes
+      become: yes
 ```
 ```yaml
 - name: nginx service start
