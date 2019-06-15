@@ -123,7 +123,7 @@ ansible-playbook ping.yml
   tasks:
     - shell: "hostnaem"
       register: out
-    - debug: "var=stdout_lines" 
+    - debug: "var=out.stdout_lines" 
 ```
 
 - Ping 모듈 
