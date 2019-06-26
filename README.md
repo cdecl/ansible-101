@@ -180,9 +180,9 @@ ansible-playbook ping.yml
   hosts: localhost
   tasks:
     - shell: "hostname"
-	  register: out  # out 이란 이름으로 작업을 등록 
-	  
-	- debug: "var=out.stdout_lines"  # out 의 stdout 을 모두 출력 
+      register: out  # out 이란 이름으로 작업을 등록 
+    
+    - debug: "var=out.stdout_lines"  # out 의 stdout 을 모두 출력 
 ```
 
 ```bash
