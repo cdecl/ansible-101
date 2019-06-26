@@ -263,7 +263,7 @@ PLAY RECAP ****************localhost                  : ok=1    changed=0    unr
 ```		
 
 
-#### - Windows Host 사용 
+### Windows Host 사용 
 - Windows Host로 사용하는 방법
 	- ssh
 	- winrm : https://github.com/cdecl/winrm-101 
@@ -312,8 +312,8 @@ ansible_port=5985
   hosts: win
   gather_facts: no
   tasks:
-	- win_ping:
-	
+    - win_ping:
+    
 - name: Install git from a pre configured source (win_chocolatey_source)
   hosts: win
   tasks:
