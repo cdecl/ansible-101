@@ -322,3 +322,8 @@ ansible_port=5985
 ```
 
 
+### 참고 
+- Awesome Ansible : https://github.com/jdauphant/awesome-ansible
+  - Ansible tutorial : https://github.com/leucos/ansible-tuto
+  - Ansible examples : https://github.com/ansible/ansible-examples
+
