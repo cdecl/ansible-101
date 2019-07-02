@@ -2,8 +2,8 @@
 
 ### Ansible Install
 - Centos 7 
-	- 기본적으로 Python 2.7 기반으로 설치 됨 
-	- 추후 pywinrm 패키지가 필요할때, python2-pip 패키지 추가 설치 필요 
+    - 기본적으로 Python 2.7 기반으로 설치 됨 
+    - 추후 pywinrm 패키지가 필요할때, python2-pip 패키지 추가 설치 필요 
 ```bash
 sudo yum install ansible
 ```
@@ -16,20 +16,20 @@ pip install ansible # --user
 ### 용어 정의 
 
 - Inventory : 관리하는 원격 서버 목록 
-	- 지정하지 않으면 Default Path 의 hosts 파일을 참조 
-		- /etc/ansible/hosts
+    - 지정하지 않으면 Default Path 의 hosts 파일을 참조 
+        - /etc/ansible/hosts
 - Module : Task 를 실행하는 방법 (모듈) 
-	- https://docs.ansible.com/ansible/latest/modules/modules_by_category.html
-	- e.g. - command, shell, copy, service 
+    - https://docs.ansible.com/ansible/latest/modules/modules_by_category.html
+    - e.g. - command, shell, copy, service 
 - Playbook : Task 실행 프로세스 정의서 
-	- Yaml 파일로 작성 
+    - Yaml 파일로 작성 
 - 멱등성(idempotence) : 연산을 여러 번 적용하더라도 결과가 달라지지 않는 성질을 의미한다.
 
 
 ### Ansbile Config 
 - Path : /etc/ansible/ansible.cfg
 - Ignore ansible ssh authenticity : ssh 최초 접속시 인증을 host key 체크 생략  
-	- https://stackoverflow.com/questions/32297456/how-to-ignore-ansible-ssh-authenticity-checking
+    - https://stackoverflow.com/questions/32297456/how-to-ignore-ansible-ssh-authenticity-checking
 
 ```bash
 [defaults]
@@ -37,14 +37,14 @@ host_key_checking = False
 ```
 
 - Callback plugins 
-	- minimal stdout 
+    - minimal stdout 
 ```
 [defaults]
 stdout_callback = minimal
 ```
 
 - 참고 : How to disable strict host key checking in ssh?
-	- https://askubuntu.com/questions/87449/how-to-disable-strict-host-key-checking-in-ssh
+    - https://askubuntu.com/questions/87449/how-to-disable-strict-host-key-checking-in-ssh
 
 
 ### Inventory 구성 
@@ -59,8 +59,8 @@ ssh-copy-id [server-ip]
 ```
 
 - Inventory 서버 등록 : /etc/ansible/hosts 
-	- 기본디렉토리의 Host 파일을 사용하지 않는다면 -i 옵션으로 Inventory 파일 지정 
-	- https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters
+    - 기본디렉토리의 Host 파일을 사용하지 않는다면 -i 옵션으로 Inventory 파일 지정 
+    - https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html#list-of-behavioral-inventory-parameters
 ```
 # ansible host 파일 예제
 
@@ -85,9 +85,9 @@ server2		ansible_host=192.168.1.51
 ```
 
 - Host 지정 방법 
-	- `all` : 해당 Inventory의 모든 서버 
-	- `webservers` : webservers 라고 정의된 서버 목록
-	- `192.168.1.100` : 192.168.1.100 서버 
+    - `all` : 해당 Inventory의 모든 서버 
+    - `webservers` : webservers 라고 정의된 서버 목록
+    - `192.168.1.100` : 192.168.1.100 서버 
 
 
 ### Ad-hook Execute
@@ -100,17 +100,17 @@ Usage: ansible <host-pattern> [options]
   -e EXTRA_VARS, --extra-vars=EXTRA_VARS
     set additional variables as key=value or YAML/JSON, if filename prepend with @  
   -f FORKS, --forks=FORKS 
-  	specify number of parallel processes to use (default=5)                                                                        
+      specify number of parallel processes to use (default=5)                                                                        
   -h, --help            show this help message and exit                                                     
   -i INVENTORY, --inventory=INVENTORY, --inventory-file=INVENTORY                                           
-  	specify inventory host path or comma separated host                                
-  	list. --inventory-file is deprecated                                               
+      specify inventory host path or comma separated host                                
+      list. --inventory-file is deprecated                                               
   -m MODULE_NAME, --module-name=MODULE_NAME                                                                 
-  	module name to execute (default=command)                                           
+      module name to execute (default=command)                                           
   -v, --verbose         verbose mode (-vvv for more, -vvvv to enable connection debugging)                                                              
   --version             show program's version number, config file location,                                
-  	configured module search path, module location,                                    
-  	executable location and exit                                                       
+      configured module search path, module location,                                    
+      executable location and exit                                                       
   -b, --become        run operations with become (does not imply password prompting)                                                                         
 ```
 
@@ -145,18 +145,18 @@ ansible webservers -m service -a "name=kubelet state=started"
 일련의 Task(작업)를 기술하여, 프로세스를 실행하는 방법 
 
 - 간략한 설명 
-	- name : 작업을 설명하는 식별자 (주석, 생략가능)
-		- 모듈 내에서의 name 은 다른 의미 
-	- gather_facts : (yes | no ) Gathering Facts 작업 실행 및 생략  
-		- Facts : 작업 시작전 Host 의 Name, CPU, Memory 등을 수집하는 Setup 모듈
-	- hosts : Inventory 내의 hosts 지정 
-	- tasks : 작업 목록들 (배열)
-	- register : 작업을 해당 이름으로 등록, debug 항목에서 표준 출력을 받아오기 위해 사용 
-	- debug : debug 용 작업들 (msg, stdout 출력)
-	- become : root 권한으로 실행 
-	- become_user : sudo 를 통해 실행할 계정 
-	- 변수값 평가 : " {{ 변수 }} "
-		- -e 파라미터를 통해 전달 가능
+    - name : 작업을 설명하는 식별자 (주석, 생략가능)
+        - 모듈 내에서의 name 은 다른 의미 
+    - gather_facts : (yes | no ) Gathering Facts 작업 실행 및 생략  
+        - Facts : 작업 시작전 Host 의 Name, CPU, Memory 등을 수집하는 Setup 모듈
+    - hosts : Inventory 내의 hosts 지정 
+    - tasks : 작업 목록들 (배열)
+    - register : 작업을 해당 이름으로 등록, debug 항목에서 표준 출력을 받아오기 위해 사용 
+    - debug : debug 용 작업들 (msg, stdout 출력)
+    - become : root 권한으로 실행 
+    - become_user : sudo 를 통해 실행할 계정 
+    - 변수값 평가 : " {{ 변수 }} "
+        - -e 파라미터를 통해 전달 가능
 
 #### - Example
 
@@ -230,7 +230,7 @@ PLAY RECAP ****************localhost                  : ok=1    changed=0    unr
 ```
 
 - Kubenetes init 예제
-	- https://github.com/cdecl/kubernetes-101/tree/master/ansible
+    - https://github.com/cdecl/kubernetes-101/tree/master/ansible
 
 ```yml
 - hosts: kubem
@@ -265,8 +265,8 @@ PLAY RECAP ****************localhost                  : ok=1    changed=0    unr
 
 ### Windows Host 사용 
 - Windows Host로 사용하는 방법
-	- ssh
-	- winrm : https://github.com/cdecl/winrm-101 
+    - ssh
+    - winrm : https://github.com/cdecl/winrm-101 
 
 ```powershell
 # host 설정 : Service Enable 
@@ -300,11 +300,11 @@ ansible_port=5985
 ```
 
 - Windows 모듈 
-	- https://docs.ansible.com/ansible/latest/modules/list_of_windows_modules.html
-	- win_command – Executes a command on a remote Windows node
-	- win_copy – Copies files to remote locations on windows hosts
-	- win_shell – Execute shell commands on target hosts (powershell)
-	- win_chocolatey – Manage packages using chocolatey
+    - https://docs.ansible.com/ansible/latest/modules/list_of_windows_modules.html
+    - win_command – Executes a command on a remote Windows node
+    - win_copy – Copies files to remote locations on windows hosts
+    - win_shell – Execute shell commands on target hosts (powershell)
+    - win_chocolatey – Manage packages using chocolatey
 
 
 ```yaml
@@ -321,6 +321,170 @@ ansible_port=5985
         name: git
 ```
 
+
+### Ansible Facts
+- Facts : 원격서버(Node)로 부터 수집한 정보를 담고 있는 변수 
+  - "ansible_architecture", 
+
+```bash
+# 원격서버 Facts 확인
+> ansible hostname -m setup 
+
+kubem | SUCCESS => {
+    "ansible_facts": {
+        "ansible_all_ipv4_addresses": [
+            "10.244.0.0",
+            "10.244.0.1",
+            "192.168.137.108",
+            "172.17.0.1"
+        ],
+        "ansible_all_ipv6_addresses": [
+            "fe80::e04c:baff:fe78:2e93",
+            "fe80::b8f6:d7ff:fecc:4c91",
+            "fe80::f8e5:7ff:fe0f:6b60",
+            "fe80::48b8:90ff:fede:71cf",
+            "fe80::8aa8:d266:54e5:1608",
+            "fe80::2918:237b:3860:3272"
+        ],
+        "ansible_apparmor": {
+            "status": "disabled"
+        },
+        "ansible_architecture": "x86_64",
+        "ansible_bios_date": "11/26/2012",
+        "ansible_bios_version": "Hyper-V UEFI Release v1.0",
+        "ansible_cmdline": {
+            "BOOT_IMAGE": "/vmlinuz-3.10.0-957.1.3.el7.x86_64",
+            "LANG": "ko_KR.UTF-8",
+            "crashkernel": "auto",
+            "quiet": true,
+            "rd.lvm.lv": "centos/swap",
+            "rhgb": true,
+            "ro": true,
+            "root": "/dev/mapper/centos-root"
+        },
+...                                                       
+```
+
+```bash
+> ansible win -m setup -a "filter=ansible_distribution*"
+
+kube02 | SUCCESS => {
+    "ansible_facts": {
+        "ansible_distribution": "CentOS",
+        "ansible_distribution_file_parsed": true,
+        "ansible_distribution_file_path": "/etc/redhat-release",
+        "ansible_distribution_file_variety": "RedHat",
+        "ansible_distribution_major_version": "7",
+        "ansible_distribution_release": "Core",
+        "ansible_distribution_version": "7.6.1810"
+    },
+    "changed": false
+}
+kube01 | SUCCESS => {
+    "ansible_facts": {
+        "ansible_distribution": "CentOS",
+        "ansible_distribution_file_parsed": true,
+        "ansible_distribution_file_path": "/etc/redhat-release",
+        "ansible_distribution_file_variety": "RedHat",
+        "ansible_distribution_major_version": "7",
+        "ansible_distribution_release": "Core",
+        "ansible_distribution_version": "7.6.1810"
+    },
+    "changed": false
+}
+kubem | SUCCESS => {
+    "ansible_facts": {
+        "ansible_distribution": "CentOS",
+        "ansible_distribution_file_parsed": true,
+        "ansible_distribution_file_path": "/etc/redhat-release",
+        "ansible_distribution_file_variety": "RedHat",
+        "ansible_distribution_major_version": "7",
+        "ansible_distribution_release": "Core",
+        "ansible_distribution_version": "7.6.1810"
+    },
+    "changed": false
+}
+192.168.28.25 | SUCCESS => {
+    "ansible_facts": {
+        "ansible_architecture": "64비트",
+        "ansible_bios_date": "11-10-2015",
+        "ansible_bios_version": "P89",
+        "ansible_date_time": {
+			....
+        },
+        "ansible_distribution": "Microsoft Windows Server 2016 Standard",
+        "ansible_distribution_major_version": "10",
+        "ansible_distribution_version": "10.0.14393.0",
+
+...
+```
+
+#### Ansible Facts
+- OS 구분에 따른 필터링 
+  - when 구문 사용 
+
+```yaml
+
+- name: nginx
+  hosts: localhost
+  tasks:
+    - service:
+        name: nginx
+        state: started
+      become: yes        
+      when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '6'
+
+    - systemd:
+        name: nginx
+        enabled: yes
+        state: started
+      become: yes        
+      when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7'
+
+```
+
+### Tags 활용 
+
+```yaml
+- name: tags test
+  hosts: localhost
+  tasks:
+    - shell : echo step 1
+      register: out
+      tags: 
+        - step1
+    - debug : var=out.stdout_lines
+      tags: 
+        - step1
+
+    - shell : echo step 2
+      register: out
+      tags: 
+        - step2
+    - debug : var=out.stdout_lines
+      tags: 
+        - step2
+
+    - shell : echo step 3
+      register: out
+      tags: 
+        - step3
+    - debug : var=out.stdout_lines
+      tags: 
+        - step3
+```
+
+```bash
+# Setp2 tags 만 실행 
+> ansible-playbook test.yml --tags "step2"
+
+ok: [localhost] => {
+    "out.stdout_lines": [
+        "step 2"
+    ]
+}
+
+```
 
 ### 참고 
 - Awesome Ansible : https://github.com/jdauphant/awesome-ansible
