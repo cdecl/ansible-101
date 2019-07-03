@@ -324,7 +324,7 @@ ansible_port=5985
 
 ### Ansible Facts
 - Facts : 원격서버(Node)로 부터 수집한 정보를 담고 있는 변수 
-  - "ansible_architecture", 
+
 
 ```bash
 # 원격서버 Facts 확인
@@ -364,6 +364,9 @@ kubem | SUCCESS => {
         },
 ...                                                       
 ```
+
+- ansible_distribution 필터링 
+    - OS 구분시 유효 
 
 ```bash
 > ansible win -m setup -a "filter=ansible_distribution*"
