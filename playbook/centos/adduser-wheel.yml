@@ -8,7 +8,7 @@
       user: 
         name: "{{username}}"
         generate_ssh_key: yes
-        group: wheel
+        groups: wheel
         #state: absent
         #remove: yes
       register: newuser
