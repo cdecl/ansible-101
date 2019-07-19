@@ -1,8 +1,8 @@
 
 - name: add user 
-  hosts: localhost,kube
+  hosts: localhost,sys
   vars:
-    username: deploy
+    username: archo5
   tasks:
     - name: add user 
       user: 
