@@ -226,42 +226,81 @@ PLAY RECAP ****************localhost                  : ok=1    changed=1    unr
 PLAY [nginx service start] 
 TASK [service] ************changed: [localhost]
 PLAY RECAP ****************localhost                  : ok=1    changed=0    unreachable=0    failed=0
-
 ```
 
-- Kubenetes init 예제
-    - https://github.com/cdecl/kubernetes-101/tree/master/ansible
 
-```yml
-- hosts: kubem
+- Loop (with_items) 및 변수 (vars) 활용
+
+```yaml
+- name: test 
+  hosts: localhost
+  gather_facts: no
+  vars:
+    SERVER_IP: 10.20.10.20 
   tasks:
-    - name: initialize the cluster
-      become: yes
-      shell: kubeadm init --pod-network-cidr=10.244.0.0/16 --ignore-preflight-errors all >> cluster_initialized.txt
-      args:
-        chdir: $HOME
-        creates: cluster_initialized.txt  # 멱등성확보, 파일이 있으면 해당 작업 스킵 
+    
+    - name: test
+      shell: |
+        echo docker run -d --name={{ item.name }} -p {{ item.port}}:80 \
+          -e SERVER_IP={{ SERVER_IP }}  
+      with_items:
+        - { name: "tomcat01", port: "8001" }
+        - { name: "tomcat02", port: "8002" }
+        - { name: "tomcat03", port: "8003" }
+        - { name: "tomcat04", port: "8004" }
+      register: out
 
-    - name: create .kube directory
-      file:
-        path: $HOME/.kube
-        state: directory
-        mode: 0755
+    - debug: 
+        msg: "{{ item.stdout_lines }}"
+      with_items: "{{ out.results }}"
+```
 
-    - name: copy admin.conf to user's kube config
-      become: yes
-      copy:
-        src: /etc/kubernetes/admin.conf
-        dest: /home/cdecl/.kube/config
-        remote_src: yes
+![](images/2020-11-03-10-36-11.png)
 
-    - name: install Pod network
-      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml >> pod_network_setup.txt
-      args:
-        chdir: $HOME
-        creates: pod_network_setup.txt
-```		
+--- 
+### Tags 활용 
 
+```yaml
+- name: tags test
+  hosts: localhost
+  tasks:
+    - shell : echo step 1
+      register: out
+      tags: 
+        - step1
+    - debug : var=out.stdout_lines
+      tags: 
+        - step1
+
+    - shell : echo step 2
+      register: out
+      tags: 
+        - step2
+    - debug : var=out.stdout_lines
+      tags: 
+        - step2
+
+    - shell : echo step 3
+      register: out
+      tags: 
+        - step3
+    - debug : var=out.stdout_lines
+      tags: 
+        - step3
+```
+
+```bash
+# Setp2 tags 만 실행 
+> ansible-playbook test.yml --tags "step2"
+
+ok: [localhost] => {
+    "out.stdout_lines": [
+        "step 2"
+    ]
+}
+```
+
+---
 
 ### Windows Host 사용 
 - Windows Host로 사용하는 방법
@@ -276,7 +315,6 @@ winrm qc
 winrm set winrm/config/service/Auth '@{Basic="true"}'
 winrm set winrm/config/service '@{AllowUnencrypted="true"}'
 winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}'
-
 ```
 
 ```bash
@@ -287,7 +325,6 @@ pip install pywinrm   # --user
 - Inventory 구성 
 
 ```ini
-
 [win]
 192.168.28.25
 
@@ -321,10 +358,10 @@ ansible_port=5985
         name: git
 ```
 
+---
 
 ### Ansible Facts
 - Facts : 원격서버(Node)로 부터 수집한 정보를 담고 있는 변수 
-
 
 ```bash
 # 원격서버 Facts 확인
@@ -446,48 +483,7 @@ kubem | SUCCESS => {
 
 ```
 
-### Tags 활용 
-
-```yaml
-- name: tags test
-  hosts: localhost
-  tasks:
-    - shell : echo step 1
-      register: out
-      tags: 
-        - step1
-    - debug : var=out.stdout_lines
-      tags: 
-        - step1
-
-    - shell : echo step 2
-      register: out
-      tags: 
-        - step2
-    - debug : var=out.stdout_lines
-      tags: 
-        - step2
-
-    - shell : echo step 3
-      register: out
-      tags: 
-        - step3
-    - debug : var=out.stdout_lines
-      tags: 
-        - step3
-```
-
-```bash
-# Setp2 tags 만 실행 
-> ansible-playbook test.yml --tags "step2"
-
-ok: [localhost] => {
-    "out.stdout_lines": [
-        "step 2"
-    ]
-}
-
-```
+---
 
 ### 참고 
 - Awesome Ansible : https://github.com/jdauphant/awesome-ansible
